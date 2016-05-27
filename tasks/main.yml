@@ -1,8 +1,13 @@
 ---
-- name: Install MySQL Community Server
+- name: Install MySQL Community Server (YUM)
   yum: name={{ item }} state=present
   with_items: "{{ mysql_packages }}"
   when: ansible_os_family == 'RedHat' and ansible_pkg_mgr == 'yum'
+
+- name: Install MySQL Community Server (DNF)
+  dnf: name={{ item }} state=present
+  with_items: "{{ mysql_packages }}"
+  when: ansible_os_family == 'RedHat' and ansible_pkg_mgr == 'dnf'
 
 - name: Enable and run MySQL Community Server
   service: name={{ mysql_service }} enabled=yes state=started
