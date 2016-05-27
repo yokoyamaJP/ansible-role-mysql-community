@@ -7,11 +7,10 @@ galaxy_info:
   platforms:
     - name: EL
       versions:
-        - 5
         - 6
         - 7
-  galaxy_tags: []
+  galaxy_tags:
+    - database
+    - mysql
 dependencies:
-  - name: rchouinard.mysql-community-repo
-    src: https://gitlab.com/rchouinard/ansible-mysql-community-repo.git
-    scm: git
+  - rchouinard.mysql-community-repo
