@@ -9,6 +9,10 @@ galaxy_info:
       versions:
         - 6
         - 7
+    - name: Fedora
+      versions:
+        - 22
+        - 23
   galaxy_tags:
     - database
     - mysql
