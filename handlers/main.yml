@@ -1,3 +1,3 @@
 ---
 - name: Restart MySQL Community Server
-  service: name={{ mysql_service }} state=restarted 
+  service: name={{ mysql_service }} state=restarted
