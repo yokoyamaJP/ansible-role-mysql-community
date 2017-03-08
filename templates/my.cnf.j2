@@ -1,0 +1,49 @@
+[mysql]
+
+port                            = {{ mysql_cfg_port }}
+socket                          = {{ mysql_cfg_socket }}
+
+[mysqld]
+
+user                            = {{ mysql_cfg_user }}
+default-storage-engine          = {{ mysql_cfg_default_storage_engine }}
+socket                          = {{ mysql_cfg_socket }}
+pid-file                        = {{ mysql_cfg_pid_file }}
+datadir                         = {{ mysql_cfg_datadir }}
+
+key-buffer-size                 = {{ mysql_cfg_key_buffer_size }}
+myisam-recover-options          = {{ mysql_cfg_myisam_recover_options }}
+
+max-allowed-packet              = {{ mysql_cfg_max_allowed_packet }}
+max-connect-errors              = {{ mysql_cfg_max_connect_errors }}
+
+server-id                       = {{ mysql_cfg_server_id }}
+log-bin                         = {{ mysql_cfg_log_bin }}
+expire-logs-days                = {{ mysql_cfg_expire_logs_days }}
+sync-binlog                     = {{ mysql_cfg_sync_binlog }}
+
+tmp-table-size                  = {{ mysql_cfg_tmp_table_size }}
+max-heap-table-size             = {{ mysql_cfg_max_heap_table_size }}
+query-cache-type                = {{ mysql_cfg_query_cache_type }}
+query-cache-size                = {{ mysql_cfg_query_cache_size }}
+max-connections                 = {{ mysql_cfg_max_connections }}
+thread-cache-size               = {{ mysql_cfg_thread_cache_size }}
+open-files-limit                = {{ mysql_cfg_open_files_limit }}
+table-definition-cache          = {{ mysql_cfg_table_definition_cache }}
+table-open-cache                = {{ mysql_cfg_table_open_cache }}
+
+innodb-flush-method             = {{ mysql_cfg_innodb_flush_method }}
+innodb-log-files-in-group       = {{ mysql_cfg_innodb_log_files_in_group }}
+innodb-log-file-size            = {{ mysql_cfg_innodb_log_file_size }}
+innodb-flush-log-at-trx-commit  = {{ mysql_cfg_innodb_flush_log_at_trx_commit }}
+innodb-file-per-table           = {{ mysql_cfg_innodb_file_per_table }}
+innodb-buffer-pool-size         = {{ mysql_cfg_innodb_buffer_pool_size }}
+
+log-error                       = {{ mysql_cfg_log_error }}
+log-queries-not-using-indexes   = {{ mysql_cfg_log_queries_not_using_indexes }}
+slow-query-log                  = {{ mysql_cfg_slow_query_log }}
+slow-query-log-file             = {{ mysql_cfg_slow_query_log_file }}
+
+{% for dir in mysql_cfg_cnfdir %}
+!includedir {{ dir }}
+{% endfor %}

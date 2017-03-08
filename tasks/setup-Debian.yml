@@ -1,0 +1,35 @@
+---
+- name: Install MySQL Community Server
+  apt: name={{ item }} state=present update_cache=yes
+  with_items: "{{ mysql_packages }}"
+
+- name: Copy configuration
+  template: src=my.cnf.j2 dest={{ mysql_cfg_cnffile }}
+  notify: Restart MySQL Community Server
+
+- name: Enable and run MySQL Community Server
+  service: name={{ mysql_service }} enabled=yes state=started
+
+- name: Check user configuration
+  stat: path=/root/.my.cnf
+  register: mysql_mycnf
+
+- name: Change root password
+  command: mysqladmin -uroot -hlocalhost password {{ mysql_root_pass }}
+  when: mysql_mycnf.stat.exists == False
+
+- name: Write root password to disk
+  ini_file: dest=~/.my.cnf mode=0600 section=client option={{ item.option }} value={{ item.value }}
+  with_items:
+    - option: user
+      value: root
+    - option: password
+      value: "{{ mysql_root_pass }}"
+
+- name: Remove anonymous users
+  mysql_user: name='' host={{ item }} state=absent
+  with_items:
+    - localhost
+
+- name: Remove test database
+  mysql_db: name=test state=absent

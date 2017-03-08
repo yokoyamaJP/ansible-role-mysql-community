@@ -1,52 +1,31 @@
 ---
-- name: Install MySQL Community Server (YUM)
-  yum: name={{ item }} state=present
-  with_items: "{{ mysql_packages }}"
-  when: ansible_os_family == 'RedHat' and ansible_pkg_mgr == 'yum'
+- name: Include OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
 
-- name: Install MySQL Community Server (DNF)
-  dnf: name={{ item }} state=present
-  with_items: "{{ mysql_packages }}"
-  when: ansible_os_family == 'RedHat' and ansible_pkg_mgr == 'dnf'
+- name: Define socket file
+  set_fact:
+    mysql_cfg_socket: "{{ __mysql_cfg_socket }}"
+  when: mysql_cfg_socket is not defined
 
-- name: Enable and run MySQL Community Server
-  service: name={{ mysql_service }} enabled=yes state=started
+- name: Define error log
+  set_fact:
+    mysql_cfg_log_error: "{{ __mysql_cfg_log_error }}"
+  when: mysql_cfg_log_error is not defined
 
-- name: Check MySQL Community Server user configuration
-  stat: path=~/.my.cnf
-  register: mysql_mycnf
+- name: Define slow log
+  set_fact:
+    mysql_cfg_slow_query_log_file: "{{ __mysql_cfg_slow_query_log_file }}"
+  when: mysql_cfg_slow_query_log_file is not defined
 
-- name: Fetch MySQL Community Server temporary password
-  command: "awk '/temporary password/{print $NF}' /var/log/mysqld.log"
-  register: mysql_awk
-  when: mysql_mycnf.stat.exists == False
+- name: Define configuration file
+  set_fact:
+    mysql_cfg_cnffile: "{{ __mysql_cfg_cnffile }}"
+  when: mysql_cfg_cnffile is not defined
 
-- name: Change MySQL Community Server temporary password
-  command: mysqladmin -uroot -p{{ mysql_awk.stdout }} -hlocalhost password {{ mysql_root_pass }}
-  #mysql_user: name=root host=localhost password={{ mysql_root_pass }} login_user=root login_host=localhost login_password={{ mysql_awk.stdout }}
-  when: mysql_mycnf.stat.exists == False and mysql_awk.stdout|default("") != ""
+- name: Define configuration directories
+  set_fact:
+    mysql_cfg_cnfdir: "{{ __mysql_cfg_cnfdir }}"
+  when: mysql_cfg_cnfdir is not defined
 
-- name: Write MySQL Community Server password to disk
-  ini_file: dest=~/.my.cnf mode=0600 section=client option={{ item.option }} value={{ item.value }}
-  with_items:
-    - option: user
-      value: root
-    - option: password
-      value: "{{ mysql_root_pass }}"
-
-- name: Update MySQL Community Server root password
-  mysql_user: name=root host={{ item }} password={{ mysql_root_pass }}
-  with_items:
-    - 127.0.0.1
-    - ::1
-    - localhost
-
-- name: Remove MySQL Community Server anonymous users
-  mysql_user: name='' host={{ item }} state=absent
-  with_items:
-    - 127.0.0.1
-    - ::1
-    - localhost
-
-- name: Remove MySQL Community Server test database
-  mysql_db: name=test state=absent
+- include: "setup-{{ ansible_os_family }}.yml"
+  when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'

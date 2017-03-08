@@ -1,0 +1,14 @@
+---
+mysql_packages:
+  - mysql-community-server
+  - MySQL-python
+mysql_service: mysqld
+
+__mysql_cfg_socket:               /var/lib/mysql/mysql.sock
+__mysql_cfg_pid_file:             /var/run/mysqld/mysqld.pid
+__mysql_cfg_datadir:              /var/lib/mysql
+__mysql_cfg_log_bin:              /var/lib/mysql/mysql-bin
+__mysql_cfg_log_error:            /var/log/mysqld.log
+__mysql_cfg_slow_query_log_file:  /var/log/mysqld-slow.log
+__mysql_cfg_cnffile:              /etc/my.cnf
+__mysql_cfg_cnfdir:               [ /etc/my.cnf.d ]

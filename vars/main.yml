@@ -1,6 +1,0 @@
----
-mysql_packages:
-  - mysql-community-server
-  - MySQL-python
-
-mysql_service: mysqld
