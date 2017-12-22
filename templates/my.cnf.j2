@@ -44,6 +44,17 @@ log-queries-not-using-indexes   = {{ mysql_cfg_log_queries_not_using_indexes }}
 slow-query-log                  = {{ mysql_cfg_slow_query_log }}
 slow-query-log-file             = {{ mysql_cfg_slow_query_log_file }}
 
+# === utf8mb4 ===========
+character-set-server = utf8mb4
+skip-character-set-client-handshake
+character-set-server = utf8mb4
+collation-server = utf8mb4_general_ci
+init-connect = SET NAMES utf8mb4
+innodb_file_format = Barracuda
+innodb_file_per_table = 1
+innodb_large_prefix
+# === /utf8mb4 ===========
+
 {% for dir in mysql_cfg_cnfdir %}
 !includedir {{ dir }}
 {% endfor %}
